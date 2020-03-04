@@ -1,31 +1,22 @@
-grammar binary;
-
-exp returns [int value]
-: e1	=	e				{System.err.println("Hello CSE" + $e1.value);}
+grammar parsing_grammar;
+@members{
+	int count=0,result=0;
+}
+start	
+	:e	{System.out.println($e.val);
+		
+	}
+	;
+e returns [int val]
+	:e0=e '+' t0=t {$val=$e0.val+$t0.val;}  
+	| t0=t{$val=$t0.val;}
+	;
+t returns [int val]
+	:t0=t '*' f0=f {$val=$t0.val *$f0.val;}
+	|f0=f {$val=$f0.val;}
+	;
+f returns [int val]
+:INT {$val=Integer.parseInt($INT.text);}
 ;
 
-e returns [int value]
-: e1 = e '+' t1 =t		{$value =$e1.value + $t1.value ;}	
-| t1 = t 				{$value = $t1.value;}
-;
-
-t returns [int value]
-: t1 = t '*' f1 = f 	{$value =$t1.value * $f1.value; }	
-| f1 = f 				{$value = $f1.value;}
-;
-
-f returns [int value]
-:
-INT  					{$value = Integer.parseInt($INT.text);}
-;
-
-ID
-: ('a' .. 'z')+ | ('A' .. 'Z')+
-;
-
-INT :   '0'..'9'+ ;
-
-WhiteSpace
-  :  (' ' | '\t' | '\r' | '\n') {skip();}
-  ;
-
+INT:('0'..'9')+;  
